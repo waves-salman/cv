@@ -1,6 +1,5 @@
 import { marked } from 'marked'
 import { markdown, attributes } from '../cv.md'
-import { homepage } from '../../package.json'
 import { wrapTablesInContainer, processContent, createHeaderFromFrontMatter } from './utils'
 import '@phosphor-icons/web/regular'
 
@@ -12,45 +11,6 @@ const processedHtml = processContent(html)
 
 // Wrap tables in container divs
 const finalHtml = wrapTablesInContainer(processedHtml)
-
-// Extract title from attributes
-const title = `${attributes.title} » ${attributes.headline}`
-
-// Set the document title
-document.title = title
-
-// Get the base URL for absolute URLs
-// Use a fallback for test environment where window.location isn't available
-const baseUrl =
-  typeof window !== 'undefined' && window.location
-    ? `${window.location.protocol}//${window.location.host}${window.location.pathname}`
-    : 'http://localhost/'
-
-// Add meta tags
-const metaItems = [
-  { name: 'description', content: `${attributes.description}` },
-  { name: 'author', content: attributes.title },
-  { property: 'og:title', content: `${attributes.title} » ${attributes.headline}` },
-  { property: 'og:description', content: `${attributes.description}` },
-  { property: 'og:site_name', content: `${attributes.title}'s CV` },
-  { property: 'og:url', content: `${homepage}` },
-  // { property: 'og:url', content: baseUrl },
-  { property: 'og:image', content: new URL('og-image.jpg', baseUrl).toString() },
-]
-
-metaItems.forEach((metaItem) => {
-  const key = metaItem.name ? 'name' : 'property'
-  const selector = `meta[${key}="${metaItem[key]}"]`
-  let metaTag = document.querySelector(selector)
-
-  if (!metaTag) {
-    metaTag = document.createElement('meta')
-    metaTag.setAttribute(key, metaItem[key])
-    document.head.appendChild(metaTag)
-  }
-
-  metaTag.setAttribute('content', metaItem.content)
-})
 
 // Create header from front matter
 createHeaderFromFrontMatter(attributes)

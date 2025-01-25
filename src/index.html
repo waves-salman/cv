@@ -3,15 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="%__CV_DATA__.description%" />
+    <meta name="author" content="%__CV_DATA__.title%" />
+
+    <!-- Open Graph tags -->
     <meta property="og:type" content="website" />
+    <meta property="og:title" content="%__CV_DATA__.title% » %__CV_DATA__.headline%" />
+    <meta property="og:description" content="%__CV_DATA__.description%" />
+    <meta property="og:site_name" content="%__CV_DATA__.title%'s CV" />
+    <meta property="og:url" content="%__BASE_URL__%" />
+    <meta property="og:image" content="%__BASE_URL__%og-image.jpg" />
     <meta property="og:locale" content="en_ZM" />
     <meta property="og:locale:alternate" content="en_GB" />
 
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="%__CV_DATA__.title% » %__CV_DATA__.headline%" />
+    <meta name="twitter:description" content="%__CV_DATA__.description%" />
+    <meta name="twitter:image" content="%__BASE_URL__%og-image.jpg" />
+
+    <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="ico/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="ico/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="ico/favicon-16x16.png" />
     <link rel="manifest" href="ico/site.webmanifest" />
+
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="scss/main.scss" />
+
+    <!-- Page title -->
+    <title>%__CV_DATA__.title% » %__CV_DATA__.headline%</title>
   </head>
   <body>
     <header></header>

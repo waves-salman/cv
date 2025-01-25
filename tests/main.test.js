@@ -40,12 +40,37 @@ vi.mock('vite-plugin-markdown', () => ({
   Mode: { MARKDOWN: 'markdown' },
 }))
 
-// Create a helper function to initialize main.js with mocks
-async function initializeMain() {
-  // Reset the DOM
-  document.documentElement.innerHTML = `
-    <html>
-      <head></head>
+/**
+ * Process template tags in HTML content
+ * @param {string} html HTML content with template tags
+ * @param {Object} data Data to inject into template
+ * @returns {string} Processed HTML
+ */
+function processTemplate(html, data) {
+  return html
+    .replace(/%__CV_DATA__\.(\w+)%/g, (_, key) => data[key])
+    .replace(/%__BASE_URL__%/g, 'https://example.com/')
+}
+
+/**
+ * Set up the DOM for testing
+ * @param {Object} data Test data
+ * @returns {void}
+ */
+function setupTestDOM(data = mockData.attributes) {
+  const template = `
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- Meta tags injected by template -->
+        <meta name="description" content="%__CV_DATA__.description%" />
+        <meta name="author" content="%__CV_DATA__.title%" />
+        <meta property="og:description" content="%__CV_DATA__.description%" />
+        <title>%__CV_DATA__.title% » %__CV_DATA__.headline%</title>
+      </head>
       <body>
         <header></header>
         <main></main>
@@ -53,6 +78,12 @@ async function initializeMain() {
     </html>
   `
 
+  // Process the template with the provided data
+  document.documentElement.innerHTML = processTemplate(template, data)
+}
+
+// Create a helper function to initialize main.js with mocks
+async function initializeMain() {
   // Mock window.fs
   vi.stubGlobal('window', {
     fs: {
@@ -60,13 +91,16 @@ async function initializeMain() {
     },
   })
 
+  // Mock Vite's template variables
+  global.__CV_DATA__ = mockData.attributes
+  global.__BASE_URL__ = 'https://example.com/'
+
   try {
     // Reset modules to ensure fresh state
     vi.resetModules()
 
-    // Ensure our mocks are properly loaded
-    const cvModule = await import('../src/cv.md')
-    console.log('CV Module loaded:', cvModule)
+    // Setup DOM with processed template
+    setupTestDOM(mockData.attributes)
 
     // Import and initialize main.js
     const mainModule = await import('../src/js/main.js')
@@ -80,23 +114,15 @@ async function initializeMain() {
 describe('main.js', () => {
   beforeEach(() => {
     vi.resetModules()
-
-    // Setup fresh DOM for each test
-    document.documentElement.innerHTML = `
-      <html>
-        <head></head>
-        <body>
-          <header></header>
-          <main></main>
-        </body>
-      </html>
-    `
+    setupTestDOM()
   })
 
   afterEach(() => {
     vi.clearAllMocks()
     vi.unstubAllGlobals()
     document.documentElement.innerHTML = ''
+    delete global.__CV_DATA__
+    delete global.__BASE_URL__
   })
 
   describe('Meta Tags', () => {
@@ -118,6 +144,7 @@ describe('main.js', () => {
     })
 
     test('updates existing meta tags instead of creating duplicates', async () => {
+      setupTestDOM()
       const existingMeta = document.createElement('meta')
       existingMeta.setAttribute('name', 'description')
       existingMeta.setAttribute('content', 'Old description')
@@ -134,6 +161,7 @@ describe('main.js', () => {
 
   describe('Header Creation', () => {
     test('creates header with all provided attributes', () => {
+      setupTestDOM()
       createHeaderFromFrontMatter(mockData.attributes)
 
       const header = document.querySelector('header')
@@ -148,6 +176,7 @@ describe('main.js', () => {
     })
 
     test('handles missing optional attributes', () => {
+      setupTestDOM()
       createHeaderFromFrontMatter({
         title: 'John Doe',
       })
@@ -205,7 +234,9 @@ describe('main.js', () => {
     })
 
     test('handles missing main element gracefully', async () => {
-      document.querySelector('main').remove()
+      setupTestDOM()
+      const main = document.querySelector('main')
+      if (main) main.remove()
       await initializeMain()
       // Should not throw an error
     })
