@@ -1,0 +1,159 @@
+{
+  "name": "cv",
+  "version": "1.0.0",
+  "description": "Markdown powered CV",
+  "private": true,
+  "author": "Victor Miti",
+  "homepage": "https://victor.co.zm/",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:cov": "vitest --coverage",
+    "commit": "git-cz",
+    "stylelint": "stylelint \"**/*.{scss,css}\" --ignore-path .gitignore",
+    "prettier": "prettier . \"!**/*.webmanifest\" --write",
+    "eslint": "eslint --ext \".js\" --ignore-path .gitignore",
+    "pdf": "node src/js/pdf.js",
+    "release": "commit-and-tag-version"
+  },
+  "dependencies": {
+    "@phosphor-icons/web": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "marked": "^14.1.2",
+    "modern-normalize": "^3.0.1",
+    "pdf-lib": "^1.17.1",
+    "puppeteer": "^23.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/eslint-parser": "^7.25.1",
+    "@babel/preset-env": "^7.25.4",
+    "@vitest/coverage-v8": "^2.1.0",
+    "autoprefixer": "^10.4.20",
+    "commit-and-tag-version": "^12.4.3",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "jsdom": "^25.0.0",
+    "prettier": "^3.3.3",
+    "sass-embedded": "^1.78.0",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard-scss": "^13.1.0",
+    "vite": "^5.4.3",
+    "vite-plugin-markdown": "^2.2.0",
+    "vitest": "^2.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "eslintConfig": {
+    "parser": "@babel/eslint-parser",
+    "extends": "plugin:prettier/recommended",
+    "parserOptions": {
+      "requireConfigFile": false,
+      "babelOptions": {
+        "presets": [
+          "@babel/preset-env"
+        ]
+      }
+    }
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true,
+    "useTabs": false,
+    "quoteProps": "consistent",
+    "bracketSpacing": true,
+    "arrowParens": "always",
+    "printWidth": 100
+  },
+  "stylelint": {
+    "extends": "stylelint-config-standard-scss",
+    "rules": {
+      "at-rule-no-unknown": null,
+      "scss/at-rule-no-unknown": true,
+      "scss/at-import-partial-extension": null
+    },
+    "ignoreFiles": [
+      "**/dist/**/*.*"
+    ]
+  },
+  "browserslist": [
+    "defaults",
+    "cover 99.5%"
+  ],
+  "commit-and-tag-version": {
+    "header": "# Changelog\n\nAll notable changes to this project will be documented here.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project attempts to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n",
+    "types": [
+      {
+        "type": "feat",
+        "section": "🚀 Features"
+      },
+      {
+        "type": "fix",
+        "section": "🐛 Bug Fixes"
+      },
+      {
+        "type": "docs",
+        "section": "📝 Docs",
+        "hidden": false
+      },
+      {
+        "type": "style",
+        "section": "💄 Styling",
+        "hidden": false
+      },
+      {
+        "type": "refactor",
+        "hidden": false,
+        "section": "♻️ Code Refactoring"
+      },
+      {
+        "type": "perf",
+        "section": "⚡️ Performance Improvements",
+        "hidden": false
+      },
+      {
+        "type": "test",
+        "section": "✅ Tests",
+        "hidden": false
+      },
+      {
+        "type": "build",
+        "section": "⚙️ Build System",
+        "hidden": false
+      },
+      {
+        "type": "ci",
+        "section": "👷 CI/CD",
+        "hidden": false
+      },
+      {
+        "type": "chore",
+        "section": "🚧 Others",
+        "hidden": true
+      },
+      {
+        "type": "revert",
+        "section": "⏪️ Reverts",
+        "hidden": true
+      }
+    ],
+    "scripts": {
+      "prechangelog": "sed -e '1,6d' -i CHANGELOG.md",
+      "postchangelog": "sed -e 's/###\\ \\[/##\\ \\[v/g' -i CHANGELOG.md && sed -re 's/##\\ \\[([0-9])/##\\ \\[v\\1/g' -i CHANGELOG.md"
+    }
+  },
+  "engines": {
+    "node": "^20 <21"
+  }
+}

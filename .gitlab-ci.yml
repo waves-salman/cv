@@ -1,0 +1,124 @@
+image: node:20-bookworm
+
+stages:
+  - setup
+  - 'lint & format'
+  - test
+  - build
+  - deploy
+  - prepare
+  - release
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules/
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"
+      when: always
+    - if: $CI_COMMIT_TAG
+      when: always
+
+deps:
+  stage: setup
+  script:
+    - npm ci
+
+eslint:
+  stage: 'lint & format'
+  script:
+    - npm run eslint
+
+prettier:
+  stage: 'lint & format'
+  script:
+    - npm run prettier
+
+stylelint:
+  stage: 'lint & format'
+  script:
+    - npm run stylelint
+
+vitest:
+  stage: test
+  script:
+    - npm run test:cov
+  coverage: /All files[^\|]*\|[^\|]*\s+([\d\.]+)/
+
+generate-pdf:
+  stage: build
+  before_script:
+    - apt-get update -y
+    - apt-get install -yq --no-install-recommends gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libnss3 lsb-release xdg-utils wget gnupg
+    - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | tee /etc/apt/trusted.gpg.d/google.asc >/dev/null
+    - sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+    - apt-get update -y
+    - apt-get install -y --no-install-recommends google-chrome-stable
+    - mkdir -p ~/.fonts
+    - wget https://github.com/adobe-fonts/source-sans/releases/download/3.052R/OTF-source-sans-3.052R.zip
+    - unzip OTF-source-sans-3.052R.zip
+    - cp -v OTF/*.otf ~/.fonts/
+    - fc-cache -f -v
+    - npx puppeteer browsers install chrome
+  script:
+    - npm run pdf
+  artifacts:
+    paths:
+      - ./*.pdf
+    expire_in: 1 hour
+
+# https://docs.gitlab.com/ee/user/project/pages/pages_access_control.html
+pages:
+  stage: deploy
+  script:
+    - npm run build
+    - cp -a dist/. public/  # GitLab Pages requires the files to be in a 'public' directory
+    # optionally, you can activate gzip support with the following line:
+    # - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec gzip -f -k {} \;
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
+prepare:
+  stage: prepare # This stage must run before the release stage
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "TODAY=($(TZ=Africa/Lusaka date --iso))" >> variables.env # Generate the TODAY environment variable
+    - apt-get update -y
+    - apt-get install -y lsb-release
+    # https://docs.makedeb.org/prebuilt-mpr/getting-started/#setting-up-the-repository
+    - wget -qO - 'https://proget.makedeb.org/debian-feeds/prebuilt-mpr.pub' | gpg --dearmor | tee /usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg 1> /dev/null
+    - echo "deb [arch=all,$(dpkg --print-architecture) signed-by=/usr/share/keyrings/prebuilt-mpr-archive-keyring.gpg] https://proget.makedeb.org prebuilt-mpr $(lsb_release -cs)" | tee /etc/apt/sources.list.d/prebuilt-mpr.list
+    - apt update -y
+    - apt install just -y --no-install-recommends
+    - just release-notes
+    - mv -v ../LATEST_RELEASE_NOTES.md .
+  artifacts:
+    paths:
+      - LATEST_RELEASE_NOTES.md
+    reports:
+      dotenv: variables.env
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - job: prepare
+      artifacts: true
+  rules:
+    - if: $CI_COMMIT_TAG # Run this job when a tag is created
+  script:
+    - echo "Creating a Gitlab Release for $CI_COMMIT_TAG"
+  release: # See https://docs.gitlab.com/ee/ci/yaml/#release for available properties
+    name: '$CI_COMMIT_TAG $TODAY'
+    description: LATEST_RELEASE_NOTES.md
+    tag_name: '$CI_COMMIT_TAG'

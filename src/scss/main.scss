@@ -1,0 +1,504 @@
+@use 'sass:color';
+@use 'sass:math';
+@import 'modern-normalize/modern-normalize.css';
+
+/***********************************
+ *      Variables - Colours        *
+ ***********************************/
+
+// Base colours
+$color-white: #fff;
+$color-black: #222;
+
+// Grayscale colours
+$gray-100: #f9f9f9;  // Lightest
+$gray-200: #ddd;     // Light
+$gray-600: #666;     // Medium
+$gray-700: #555;     // Dark
+$gray-800: #333;     // Darker
+
+// Primary colour
+$color-primary: #0073e6;
+
+// Monospace colour
+$color-monospace: #721c1c;
+
+/***********************************
+ *     Variables - Typography      *
+ ***********************************/
+
+// https://github.com/system-fonts/modern-font-stacks
+$font-sans: avenir, montserrat, corbel, 'URW Gothic', source-sans-pro, sans-serif;
+$font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', menlo, consolas, 'DejaVu Sans Mono',
+  monospace;
+
+// $font-serif: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', p052, serif;
+$line-height-base: 1.6;
+$font-size-base: 1.1rem;
+$font-size-title: 2rem;
+
+/***********************************
+ *      Variables - Spacing        *
+ ***********************************/
+
+$spacer: 10px;
+
+/***********************************
+ *   Variables - Miscellaneous     *
+ ***********************************/
+
+$print-scale-factor: math.div(7, 10);
+$print-scale-factor-alt: math.div(9, 16);
+$slightly-smaller: math.div(7, 8);
+$slightly-bigger: math.div(8, 7);
+
+/***********************************
+ *   Variables - Breakpoints       *
+ ***********************************/
+
+// Small tablets (portrait view)
+$screen-md-min: 768px;
+
+// Large tablets and desktops
+$screen-xl-max: 1320px;
+
+/***********************************
+ *              Mixins             *
+ ***********************************/
+
+// Medium devices
+@mixin md {
+  @media (min-width: #{$screen-md-min}) {
+    @content;
+  }
+}
+
+// Printing
+@mixin print {
+  @media print {
+    @content;
+  }
+}
+
+/***********************************
+ *          global styles          *
+ ***********************************/
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+code {
+  font-family: $font-mono;
+  color: $color-monospace;
+}
+
+/***********************************
+ *              <body>             *
+ ***********************************/
+
+body {
+  font-family: $font-sans;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: $screen-xl-max;
+  margin: 0 auto;
+
+  @include print {
+    font-size: $print-scale-factor * $font-size-base;
+    line-height: $slightly-smaller * $line-height-base;
+  }
+}
+
+/***********************************
+ *            <header>             *
+ ***********************************/
+
+header {
+  padding: 3 * $spacer 3 * $spacer 1.5 * $spacer;
+  display: flex;
+  flex-direction: column;
+  color: $gray-800;
+  margin-bottom: 1.5 * $spacer;
+
+  h1 {
+    font-size: $font-size-title;
+    margin: 0;
+  }
+
+  & > div:first-of-type {
+    margin-bottom: $spacer;
+  }
+
+  p {
+    font-size: 1.15 * $font-size-base;
+    color: $color-black;
+    margin: 0;
+  }
+
+  div.contact-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  div.contact-details div {
+    display: flex;
+    align-items: center;
+  }
+
+  div.contact-details i {
+    margin-right: 0.8 * $spacer;
+    color: $gray-600;
+  }
+
+  @include md {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    div.contact-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: $spacer;
+      font-size: 1.15 * $font-size-base;
+
+      @include print {
+        gap: $slightly-smaller * $spacer;
+        font-size: $print-scale-factor * $font-size-base;
+      }
+
+      i {
+        @include print {
+          margin-right: $print-scale-factor * 0.8 * $spacer;
+          font-size: $print-scale-factor * $font-size-base;
+        }
+      }
+    }
+
+    h1 {
+      line-height: 1;
+      font-size: 1.5 * $font-size-title;
+
+      @include print {
+        font-size: $slightly-bigger * 1.1 * $font-size-title;
+      }
+    }
+
+    & > div:first-of-type {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: $spacer;
+
+      @include print {
+        margin-bottom: $print-scale-factor * $spacer;
+      }
+    }
+
+    p {
+      line-height: 1;
+      font-size: 1.6 * $font-size-base;
+
+      @include print {
+        font-size: $slightly-bigger * 1.1 * $font-size-base;
+      }
+    }
+  }
+
+  @include print {
+    padding: ($print-scale-factor * 3 * $spacer) ($print-scale-factor * 3 * $spacer)
+      ($print-scale-factor * 1.5 * $spacer);
+    margin-bottom: $print-scale-factor * 1.5 * $spacer;
+
+    // begin: fix to ensure correct rendering when printing via the browser print dialog
+    // TODO: needs DRYer approach because this is already defined in "@include md {} above"
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    div.contact-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: $slightly-smaller * $spacer;
+      font-size: $print-scale-factor * $font-size-base;
+
+      i {
+        margin-right: $print-scale-factor * 0.8 * $spacer;
+        font-size: $print-scale-factor * $font-size-base;
+      }
+    }
+
+    // end: fix
+  }
+}
+
+/***********************************
+ *             <main>              *
+ ***********************************/
+
+main {
+  padding: 1.5 * $spacer 3 * $spacer 3 * $spacer;
+  margin-bottom: 6 * $spacer;
+  flex: 1;
+  background-color: $color-white;
+  box-shadow: 0 0.4 * $spacer 0.8 * $spacer rgb(0 0 0 / 20%);
+
+  @include print {
+    padding: ($print-scale-factor * 1.5 * $spacer) ($print-scale-factor * 3 * $spacer)
+      ($print-scale-factor * 3 * $spacer);
+    margin-bottom: $print-scale-factor * 1.5 * $spacer;
+    box-shadow: none;
+
+    strong {
+      color: $gray-800;
+    }
+  }
+
+  h2,
+  h3 {
+    color: $color-black;
+  }
+
+  h2 {
+    font-size: 1.65 * $font-size-base;
+    border-bottom: 0.5 * $spacer solid $color-primary;
+    padding-bottom: $spacer;
+    display: flex;
+    align-items: baseline;
+    margin: 3 * $spacer 0;
+
+    @include print {
+      font-size: $print-scale-factor-alt * 1.65 * $font-size-base;
+      border-bottom: $print-scale-factor-alt * 0.5 * $spacer solid $color-primary;
+      padding-bottom: $print-scale-factor-alt * $spacer;
+      margin: ($print-scale-factor-alt * 3 * $spacer) 0;
+    }
+  }
+
+  h3 {
+    margin: 3 * $spacer 0 0;
+    font-size: 1.375 * $font-size-base;
+
+    @include print {
+      margin: ($print-scale-factor-alt * 3 * $spacer) 0 0;
+      font-size: $print-scale-factor-alt * 1.375 * $font-size-base;
+    }
+  }
+
+  p,
+  ul,
+  ol {
+    margin-bottom: 2 * $spacer;
+    color: $gray-700;
+
+    @include print {
+      margin-bottom: $spacer;
+      color: unset;
+    }
+  }
+
+  ul,
+  ol {
+    padding-left: 2 * $spacer;
+  }
+
+  li {
+    margin-bottom: $spacer;
+
+    @include print {
+      margin-bottom: $print-scale-factor * $spacer;
+    }
+  }
+
+  ul {
+    ul {
+      font-size: $slightly-smaller * $font-size-base;
+      margin-bottom: $slightly-smaller * $spacer;
+
+      @include print {
+        font-size: $slightly-smaller * $print-scale-factor * $font-size-base;
+      }
+
+      li {
+        margin-bottom: $slightly-smaller * $print-scale-factor * $spacer;
+      }
+    }
+  }
+}
+
+/***********************************
+ *            <table>              *
+ ***********************************/
+
+.table-container {
+  border-top: 1px solid $gray-800;
+  border-bottom: 1px solid $gray-800;
+  overflow-x: auto;
+  margin: 3 * $spacer 0;
+
+  @include print {
+    margin: $print-scale-factor-alt * 3 * $spacer 0;
+    border-top: 1px solid $gray-200;
+    border-bottom: 1px solid $gray-200;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.5rem;
+      text-align: left;
+      vertical-align: top;
+
+      @include print {
+        padding: $print-scale-factor-alt * 0.5rem;
+      }
+    }
+
+    thead th {
+      border-bottom: 1px solid $gray-800;
+      background-color: $gray-100;
+      font-weight: bold;
+
+      @include print {
+        border-bottom: 1px solid $gray-200;
+        color: $gray-700;
+      }
+    }
+
+    tbody tr:not(:last-child) {
+      border-bottom: 1px solid $gray-200;
+    }
+  }
+}
+
+/***********************************
+ *       Technical Skills          *
+ ***********************************/
+
+.technical-skills {
+  margin-left: 0;
+  padding-left: 0;
+  list-style: none;
+
+  li.skill-category {
+    font-weight: bold;
+    margin-bottom: $spacer;
+    position: relative;
+
+    div:first-of-type {
+      display: flex;
+      align-items: center;
+    }
+
+    i {
+      margin-right: 0.8 * $spacer;
+    }
+  }
+
+  li ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    margin-left: 2.4 * $spacer;
+    flex-wrap: wrap;
+    gap: $spacer;
+
+    li {
+      border: 1px solid $color-primary;
+      padding: 0.25 * $spacer 0.5 * $spacer;
+      margin: 0;
+      border-radius: 0.5 * $spacer;
+      font-size: 0.8 * $font-size-base;
+      display: inline-block;
+      font-weight: normal;
+
+      &:hover {
+        background-color: color.adjust($color-primary, $lightness: -20%);
+        color: $color-white;
+        cursor: default;
+      }
+
+      @include print {
+        padding: $print-scale-factor * 0.25 * $spacer $print-scale-factor * 0.5 * $spacer;
+        border-radius: $print-scale-factor * 0.5 * $spacer;
+        font-size: $print-scale-factor * 0.8 * $font-size-base;
+      }
+    }
+  }
+}
+
+/**********************************************************************************
+ *         Timeline Entries (Work history, Conferences, Writing, etc.)            *
+ **********************************************************************************/
+
+.timeline-entry {
+  font-weight: bold;
+  margin-top: 2 * $spacer;
+
+  @include print {
+    margin-top: $spacer;
+  }
+}
+
+.timeline-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 2 * $spacer;
+  margin-top: 0.5 * $spacer;
+  margin-bottom: 1.5 * $spacer;
+
+  @include print {
+    gap: $spacer;
+    margin-top: 0.25 * $spacer;
+    margin-bottom: 0.75 * $spacer;
+  }
+
+  .period {
+    color: $gray-700;
+  }
+
+  .organization,
+  .period {
+    font-size: $slightly-bigger * $font-size-base;
+
+    @include print {
+      font-size: $print-scale-factor * $slightly-bigger * $font-size-base;
+    }
+  }
+}
+
+/***********************************
+ *         @media print            *
+ ***********************************/
+
+@media print {
+  @page {
+    size: a4;
+    margin: 0.5in 0.5in 0.6in;
+  }
+
+  body {
+    text-align: justify;
+  }
+
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+
+  table,
+  figure {
+    page-break-inside: avoid;
+  }
+}
