@@ -20,7 +20,11 @@ const title = `${attributes.title} » ${attributes.headline}`
 document.title = title
 
 // Get the base URL for absolute URLs
-const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`
+// Use a fallback for test environment where window.location isn't available
+const baseUrl =
+  typeof window !== 'undefined' && window.location
+    ? `${window.location.protocol}//${window.location.host}${window.location.pathname}`
+    : 'http://localhost/'
 
 // Add meta tags
 const metaItems = [
