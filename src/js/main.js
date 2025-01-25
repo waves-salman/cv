@@ -19,6 +19,9 @@ const title = `${attributes.title} » ${attributes.headline}`
 // Set the document title
 document.title = title
 
+// Get the base URL for absolute URLs
+const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`
+
 // Add meta tags
 const metaItems = [
   { name: 'description', content: `${attributes.description}` },
@@ -27,6 +30,8 @@ const metaItems = [
   { property: 'og:description', content: `${attributes.description}` },
   { property: 'og:site_name', content: `${attributes.title}'s CV` },
   { property: 'og:url', content: `${homepage}` },
+  // { property: 'og:url', content: baseUrl },
+  { property: 'og:image', content: new URL('og-image.jpg', baseUrl).toString() },
 ]
 
 metaItems.forEach((metaItem) => {
