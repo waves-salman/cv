@@ -55,7 +55,7 @@ Graphics and Systems Engineer with 6+ years of experience in real-time 3D render
 
 ## Professional Experience [ph-briefcase]
 
-### Senior Graphics Engineer [2022 – Present] | [Liquid Thought Interactive](https://liquidthought.co.za)
+### Senior Graphics Engineer [May 2022 – Present] | [Liquid Thought Interactive](https://liquidthought.co.za)
 
 - Lead development of custom rendering engine for architectural visualization
 - Implemented real-time ray tracing pipeline reducing render times by 65%
@@ -63,7 +63,7 @@ Graphics and Systems Engineer with 6+ years of experience in real-time 3D render
 - Mentored junior graphics programmers and conducted technical workshops
 - Developed custom tools for content creation pipeline
 
-### Graphics Engineer [2020 – 2022] | [Prism Studios](https://prismstudios.example.com)
+### Graphics Engineer [Aug 2020 – Apr 2022] | [Prism Studios](https://prismstudios.example.com)
 
 - Developed rendering features for cross-platform game engine
 - Implemented PBR materials system and advanced post-processing effects
@@ -71,7 +71,7 @@ Graphics and Systems Engineer with 6+ years of experience in real-time 3D render
 - Contributed to open-source graphics libraries
 - Optimized rendering for mobile platforms
 
-### Junior Graphics Programmer [2018 – 2020] | [Digital Frontiers](https://digitalfrontiers.example.com)
+### Junior Graphics Programmer [Jan 2018 – Jul 2020] | [Digital Frontiers](https://digitalfrontiers.example.com)
 
 - Implemented real-time visual effects using OpenGL and GLSL
 - Developed shading and material systems
@@ -130,7 +130,7 @@ Graphics and Systems Engineer with 6+ years of experience in real-time 3D render
 - Created practical tutorials and example projects
 - Generated significant community engagement
 
-### Optimizing Graphics for Mobile Devices [2022] | Mobile Dev Magazine
+### Optimizing Graphics for Mobile Devices [Sep 2022] | Mobile Dev Magazine
 
 - Published detailed guide on mobile graphics optimization
 - Covered performance profiling and optimization strategies
