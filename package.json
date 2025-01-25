@@ -26,7 +26,8 @@
     "marked": "^14.1.2",
     "modern-normalize": "^3.0.1",
     "pdf-lib": "^1.17.1",
-    "puppeteer": "^23.3.0"
+    "puppeteer": "^23.3.0",
+    "yaml": "^2.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
