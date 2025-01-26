@@ -1,5 +1,5 @@
 ---
-title: Thandiwe Mukelabai
+title: Salman P Y
 headline: Graphics & Systems Engineer
 description: Thandiwe is a graphics and systems engineer specializing in real-time 3D rendering, game engine development, and high-performance computing.
 email: thandiwe@example.co.zm
